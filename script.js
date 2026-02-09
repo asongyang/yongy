@@ -141,6 +141,10 @@
             const totalPriceEl = document.getElementById('totalPriceDisplay');
             if (totalPriceEl) totalPriceEl.innerText = totalPriceAccumulated.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+            // Update Sacks (Automatically from transactions length)
+            const totalSacksEl = document.getElementById('totalSacksDisplay');
+            if (totalSacksEl) totalSacksEl.innerText = transactions.length;
+
             // Update Payout (Right Panel Footer)
             const payoutEl = document.getElementById('payoutAmount');
             if (payoutEl) {
@@ -237,7 +241,10 @@
                         <span>ລູກຄ້າ:</span> <strong>${currentCustomerName}</strong>
                     </div>
                     <div class="row">
-                        <span>ຜູ້ຮັບຊື້:</span> <span>ທ້າວ ລາມົວ</span>
+                        <span>ຈຳນວນເປົາ:</span> <strong>${transactions.length}</strong>
+                    </div>
+                    <div class="row">
+                        <span>ຜູ້ຮັບຊື้:</span> <span>ທ້າວ ລາມົວ</span>
                     </div>
                 </div>
 
@@ -290,7 +297,44 @@
             window.print();
 
             // After print dialog closes (whether printed or canceled), reset everything
+            // Also save to Google Sheets
+            saveToGoogleSheets();
             resetTransaction();
+        }
+
+        async function saveToGoogleSheets() {
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbzAgSmo1Zpjuk0t1SVnjrCmYQDSM9BfJqPTtfbe7XaauHQT6L_nbjpk5p61hcJDlRsa/exec';
+
+            // Get current date/time
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('lo-LA');
+            const timeStr = now.toLocaleTimeString('lo-LA');
+
+            const data = {
+                invoice: currentInvoiceNumber,
+                customer: currentCustomerName,
+                sacks: transactions.length,
+                totalWeight: totalWeightAccumulated,
+                totalAmount: totalPriceAccumulated,
+                date: dateStr,
+                time: timeStr
+            };
+
+            try {
+                // Using method: 'POST' with mode: 'no-cors' for Google Apps Script
+                await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                console.log('Data sent to Google Sheets successfully');
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+            }
         }
 
         function resetTransaction() {
