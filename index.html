@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="lo">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RubberTrade</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    
+    <!-- Desktop Sidebar -->
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">A</div>
+                <span>ລະບົບຂາຍຢາງພາລາ</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">Trading Terminal</a>
+                <a href="#" class="nav-item">Transaction History</a>
+                <a href="#" class="nav-item">Market Rates</a>
+                <a href="#" class="nav-item">Reports</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="nav-item">System Settings</div>
+                <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                    <div style="width: 32px; height: 32px; background: #ddd; border-radius: 50%;"></div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem;">Asong yang</div>
+                        <div style="font-size: 0.75rem; color: #666;">Warehouse Lead</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <button class="back-btn" style="font-size: 1.5rem;">&#9776;</button>
+            <div class="mobile-title">ຊັ່ງນ້ຳໜັກຢາງ</div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary" onclick="openNameModal()">Name</button>
+                <button class="btn btn-primary" onclick="openPriceModal()">Price</button>
+            </div>
+        </header>
+
+        <!-- Mobile History List (Visible only on Mobile) -->
+        <div class="mobile-history" id="mobileHistoryList">
+            <div style="text-align: center; color: #999; margin-top: 40px;">No Recent Transactions</div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="header">
+                <h2 style="font-size: 1.5rem;">Current Session <span class="session-badge">Live Input</span></h2>
+                <div style="display: flex; gap: 10px;">
+                    <!-- <button class="btn btn-icon" onclick="openPriceModal()">🤓</button> -->
+                    <div style="font-size: 1.5rem;">🥰</div>
+                    <!-- <div style="font-size: 1.5rem;">😍</div> -->
+                    <!-- <div style="font-size: 1.5rem;">😆</div> -->
+                    <div style="font-size: 1.5rem;">😷</div>
+                    <div style="font-size: 1.5rem;">😁</div>
+                    <div style="font-size: 1.5rem;">😅</div>
+
+                    <div style="font-size: 1.5rem;">🤓</div>
+                    <button class="btn btn-primary" onclick="openNameModal()">Name</button>
+                    <button class="btn btn-primary" onclick="openPriceModal()">Price</button>
+                </div>
+            </div>
+
+            <!-- New Summary Row -->
+            <div class="summary-row centered-content"
+                style="display: flex; justify-content: space-between; margin: 16px auto 32px auto; align-items: flex-end; padding: 0 32px; ">
+                <div class="summary-item" style="font-size: 1.25rem; font-weight: 700; color: #333;">
+                    ນ້ຳໜັກລວມ: <span id="totalWeightDisplay" class="summary-value"
+                        style="color: #00C853; font-size: 1.6rem;">0.00</span> kg
+                </div>
+                <div class="summary-item" style="font-size: 1.25rem; font-weight: 700; color: #333;">
+                    ລາຄາລວມ: <span id="totalPriceDisplay" class="summary-value"
+                        style="color: #00C853; font-size: 1.6rem;">0.00</span> ₭
+                </div>
+            </div>
+
+            <!-- Input Row -->
+            <div class="input-row centered-content"
+                style="display: flex !important; margin: 0 auto 32px auto; gap: 20px; align-items: stretch; height: 72px; padding: 0 32px;">
+                <div class="input-box"
+                    style="background: white; border: 2px solid #e0e0e0; display: flex; align-items: center; padding: 0 24px; flex: 1; border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,0.04); transition: 0.2s;">
+                    <span class="label-weight-desktop" style="color: #bbb; font-size: 1.2rem; font-weight: 500;">ນ້ຳໜັກ
+                        (kg)</span>
+                    <span id="currentInputDisplay"
+                        style="margin-left: auto; font-size: 2.2rem; font-weight: 700; color: #333; letter-spacing: -1px;">0.00</span>
+                </div>
+                <button class="add-btn" id="addBtn"
+                    style="font-size: 1.25rem; letter-spacing: 1.5px; padding: 0 40px; border-radius: 16px; background: #00C853; box-shadow: 0 10px 25px rgba(0, 200, 83, 0.3); text-transform: uppercase; font-weight: 800; border: none; color: white; cursor: pointer;">ADD</button>
+            </div>
+
+            <!-- Keypad -->
+            <div class="keypad-grid centered-content"
+                style="grid-template-columns: repeat(4, 1fr) !important; gap: 12px; max-height: none; padding: 0 32px; background: transparent; margin: 0 auto;">
+                <button class="key-btn" onclick="inputDigit('8')">8</button>
+                <button class="key-btn" onclick="inputDigit('9')">9</button>
+                <button class="key-btn" onclick="inputDigit('.')">.</button>
+                <button class="key-btn key-delete" onclick="inputDelete()">&#9003;</button>
+
+                <button class="key-btn" onclick="inputDigit('4')">4</button>
+                <button class="key-btn" onclick="inputDigit('5')">5</button>
+                <button class="key-btn" onclick="inputDigit('6')">6</button>
+                <button class="key-btn" onclick="inputDigit('7')">7</button>
+
+                <button class="key-btn" onclick="inputDigit('0')">0</button>
+                <button class="key-btn" onclick="inputDigit('1')">1</button>
+                <button class="key-btn" onclick="inputDigit('2')">2</button>
+                <button class="key-btn" onclick="inputDigit('3')">3</button>
+            </div>
+
+            <!-- Save Button (Large Green - Mobile Only) -->
+            <button class="save-btn-mobile mobile-only" onclick="saveTransaction()"
+                style="margin-top: 12px; box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3); border: 1px solid #009624;">
+                <span></span> ບັນທຶກ (SAVE)
+            </button>
+
+        </main>
+
+        <!-- Right Panel (Desktop) -->
+        <aside class="right-panel">
+            <div class="right-panel-content">
+                <div class="panel-title">
+                    ລາຍການຫຼ້າສຸດ
+                </div>
+
+                <div class="price-list" id="desktopPriceList">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <div class="right-panel-footer">
+                <div class="payout-card">
+                    <div class="payout-amount">ລາຄາລວມ: <span id="payoutAmount">0.00 ₭</span></div>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-primary" onclick="saveTransaction()"
+                        style="width: 100%; height: 60px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; background: var(--primary); border: none; box-shadow: 0 8px 16px rgba(0, 200, 83, 0.2); display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.1s;">
+                        <span></span> ບັນທຶກ (SAVE)
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="modal-overlay" id="priceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ຕັ້ງຄ່າລາຄາຢາງ</h3>
+                <p style="color: #888; font-size: 0.9rem;">ປັບປຸງລາຄາຕະຫຼາດປັດຈຸບັນ (ໜ່ວຍ: ບາດ/ກິໂລ)</p>
+            </div>
+            <div class="modal-body" id="modalInputList">
+                <!-- Inputs generated by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closePriceModal()">ຍົກເລີກ</button>
+                <button class="btn-save" onclick="savePrices()">ບັນທຶກລາຄານີ້</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Name Modal -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ບັນທຶກຂໍ້ມູນລູກຄ້າ</h3>
+                <p style="color: #888; font-size: 0.9rem;">ກະລຸນາລະບຸຊື່ລູກຄ້າເພື່ອອອກໃບບິນ</p>
+            </div>
+            <div class="modal-body">
+                <div class="price-input-group">
+                    <label>ຊື່ລູກຄ້າ</label>
+                    <div class="price-input-wrapper">
+                        <input type="text" id="customerNameInput" placeholder="ລະບຸຊື່ລູກຄ້າ...">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('customerModal')">ຍົກເລີກ</button>
+                <button class="btn-save" onclick="confirmCustomer()">ບັນທຶກ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>ລາຍລະອຽດການຊັ່ງນ້ຳໜັກ</h3>
+            </div>
+            <div class="modal-body" id="receiptContent">
+                <!-- Content generated by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('receiptModal')">ກັບໄປແກ້ໄຂ</button>
+                <button class="btn-save" onclick="printReceipt()">Print</button>
+            </div>
+        </div>
+    </div>
+
+   <script src="script.js"></script>
+</body>
+
+</html>
