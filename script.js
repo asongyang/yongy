@@ -1,4 +1,4 @@
- // State
+        // State
         let currentWeight = "0"; // Represents the keypad input
         let totalWeightAccumulated = 0;
         let totalPriceAccumulated = 0;
